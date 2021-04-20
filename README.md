@@ -13,7 +13,7 @@ username: your UPN in Azure
 ```
 projectname=adamsblade
 appreg=adamsbladeappreg
-username=adamlash@microsoft.com
+username=username@domain.com
 ```
 
 ### 3. Create App Registration
