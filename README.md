@@ -5,9 +5,9 @@
 ### 1. Clone this Repo
 
 ### 2. Set some vars on the CLI for use
-Projectname: the overall unique name for your resources
-appreg: the name of the application registration for your hololens app
-username: your UPN in Azure
+* Projectname: the overall unique name for your resources
+* appreg: the name of the application registration for your hololens app
+* username: your UPN in Azure
 
 
 ```
