@@ -23,9 +23,10 @@ username=username@domain.com
 Save Output for later
 
 ### 4. Get ObjectID of App Registation and User and assign to envvar
-`objectid=$(az ad sp list --display-name ${appreg} --query [0].objectId --output tsv)`
-`userid=$(az ad user list --upn ${username} --query [0].objectId --output tsv)`
-
+```
+objectid=$(az ad sp list --display-name ${appreg} --query [0].objectId --output tsv)
+userid=$(az ad user list --upn ${username} --query [0].objectId --output tsv)
+```
 you can echo this `echo $objectid` and `echo $userid` to check it has a value
 
 
