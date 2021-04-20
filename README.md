@@ -22,17 +22,17 @@ username=username@domain.com
 
 Save Output for later
 
-### 4. Get ObjectID of App Registation and assign to envvar
+### 4. Get ObjectID of App Registation and User and assign to envvar
 `objectid=$(az ad sp list --display-name ${appreg} --query [0].objectId --output tsv)`
+`userid=$(az ad user list --upn ${username} --query [0].objectId --output tsv)`
 
-
-you can echo this `echo $objectid` to check it has a value
+you can echo this `echo $objectid` and `echo $userid` to check it has a value
 
 
 ### 5. Create Resource Group
 `az group create --name ${projectname}-rg --location eastus`
 
 ### 6. Deploy ARM template to Resource Group
-`az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${username} appRegObjectId=${objectid}`
+`az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${userid} appRegObjectId=${objectid}`
 
 ### 7. Add values to the Device Sim and Test
