@@ -17,7 +17,7 @@ username=username@domain.com
 ```
 
 ### 3. Create App Registration
-`az ad sp create-for-rbac --name ${appreg}`
+`az ad sp create-for-rbac --name ${appreg} --skip-assignment`
 
 
 Save Output for later
