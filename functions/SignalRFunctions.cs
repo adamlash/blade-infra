@@ -39,55 +39,48 @@ namespace SignalRFunctions
             ILogger log)
         {
             JObject eventGridData = (JObject)JsonConvert.DeserializeObject(eventGridEvent.Data.ToString());
-
-            log.LogInformation($"Event grid message: {eventGridData}");
-
-            var data = eventGridData.SelectToken("data");
-
-            var telemetryMessage = new Dictionary<object, object>();
-            foreach (JProperty property in data.Children())
+            if (eventGridEvent.EventType.Contains("telemetry"))
             {
-                log.LogInformation(property.Name + " - " + property.Value);
-                telemetryMessage.Add(property.Name, property.Value);
+                var data = eventGridData.SelectToken("data");
+
+                var telemetryMessage = new Dictionary<object, object>();
+                foreach (JProperty property in data.Children())
+                {
+                    log.LogInformation(property.Name + " - " + property.Value);
+                    telemetryMessage.Add(property.Name, property.Value);
+                }
+                return signalRMessages.AddAsync(
+                new SignalRMessage
+                {
+                    Target = "TelemetryMessage",
+                    Arguments = new[] { telemetryMessage }
+                });
             }
-            return signalRMessages.AddAsync(
-            new SignalRMessage
+            else
             {
-                Target = "TelemetryMessage",
-                Arguments = new[] { telemetryMessage }
-            });
+                turbineId = eventGridEvent.Subject;
+                log.LogInformation($"updating {turbineId}'s alert property");
 
-        }
-        [FunctionName("property")]
-        public static Task SendProperty(
-                [EventGridTrigger] EventGridEvent eventGridEvent,
-                [SignalR(HubName = "dttelemetry")] IAsyncCollector<SignalRMessage> signalRMessages,
-                ILogger log)
-        {
-            JObject eventGridData = (JObject)JsonConvert.DeserializeObject(eventGridEvent.Data.ToString());
-            
-            turbineId = eventGridEvent.Subject;
-            log.LogInformation($"updating {turbineId}'s alert property");
-            log.LogInformation(eventGridData.ToString());
+                var patch = (JObject)eventGridData["data"]["patch"][0];
+                if (patch["path"].ToString().Contains("/Alert"))
+                {
+                    alert = (patch["value"].ToObject<bool>());
+                    log.LogInformation($"setting alert to: {alert}");
+                }
 
-            var patch = (JObject)eventGridData["data"]["patch"][0];
-            if (patch["path"].ToString().Contains("/Alert"))
-            {
-                alert = (patch["value"].ToObject<bool>());
-                log.LogInformation($"setting alert to: {alert}");
-            }
-            
-            var property = new Dictionary<object, object>
+                var property = new Dictionary<object, object>
             {
                 {"TurbineID", turbineId },
                 {"Alert", alert }
             };
-            return signalRMessages.AddAsync(
-                new SignalRMessage
-                {
-                    Target = "PropertyMessage",
-                    Arguments = new[] { property }
-                });
+                return signalRMessages.AddAsync(
+                    new SignalRMessage
+                    {
+                        Target = "PropertyMessage",
+                        Arguments = new[] { property }
+                    });
+            }
+
         }
     }
 }
