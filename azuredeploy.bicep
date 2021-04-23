@@ -17,6 +17,7 @@ var eventGridName = '${projectName}eg${unique}'
 var funcAppName = '${projectName}funcapp${unique}'
 var appInightsName = '${projectName}appinsight${unique}'
 var eventGridIngestName =  '${projectName}egingest${unique}'
+var eventGridCLTopicName = '${projectName}clt${unique}'
 var fileContainerName =  'bladeremoteassets'
 var ingestFuncName = 'telemetryfunction'
 
@@ -215,7 +216,7 @@ resource eventGridIngestTopic 'Microsoft.EventGrid/systemTopics@2020-04-01-previ
 }
 
 resource eventGridChangeLogTopic 'Microsoft.EventGrid/topics@2020-10-15-preview' = {
-  name: 'adtchangelogtopic'
+  name: eventGridCLTopicName
   location: location
   sku: {
     name: 'Basic'
