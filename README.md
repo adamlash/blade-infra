@@ -1,5 +1,6 @@
 # Blade Infra 
-
+## Required Installs
+Azure CLI: https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
 
 ## CLI
 ### 1. Clone this Repo
