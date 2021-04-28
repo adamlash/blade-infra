@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace SignalRFunctions
 {
@@ -58,27 +59,33 @@ namespace SignalRFunctions
             }
             else
             {
-                turbineId = eventGridEvent.Subject;
-                log.LogInformation($"updating {turbineId}'s alert property");
-
-                var patch = (JObject)eventGridData["data"]["patch"][0];
-                if (patch["path"].ToString().Contains("/Alert"))
+                try
                 {
-                    alert = (patch["value"].ToObject<bool>());
-                    log.LogInformation($"setting alert to: {alert}");
-                }
+                    turbineId = eventGridEvent.Subject;
+                    log.LogInformation($"updating {turbineId}'s alert property");
+                    var data = eventGridData.SelectToken("data");
+                    var patch = data.SelectToken("patch");
 
-                var property = new Dictionary<object, object>
-            {
-                {"TurbineID", turbineId },
-                {"Alert", alert }
-            };
-                return signalRMessages.AddAsync(
-                    new SignalRMessage
+                    alert = patch.First["value"].ToObject<bool>();
+
+                    log.LogInformation($"setting alert to: {alert}");
+                    var property = new Dictionary<object, object>
                     {
-                        Target = "PropertyMessage",
-                        Arguments = new[] { property }
-                    });
+                        {"TurbineID", turbineId },
+                        {"Alert", alert }
+                    };
+                    return signalRMessages.AddAsync(
+                        new SignalRMessage
+                        {
+                            Target = "PropertyMessage",
+                            Arguments = new[] { property }
+                        });
+                }
+                catch (Exception e)
+                {
+                    log.LogInformation(e.Message);
+                    return null;
+                }
             }
 
         }
