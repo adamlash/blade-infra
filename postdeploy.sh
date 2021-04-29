@@ -36,6 +36,7 @@ for i in {98..107}
 do
     echo "Create Turbine T$i"
     az dt twin create -n $adtname --dtmi $turbineid --twin-id "T$i"
+    az dt twin update -n $adtname --twin-id "T$i" --json-patch '[{"op":"add", "path":"/TurbineID", "value": "'"T$i"'"},{"op":"add", "path":"/Alert", "value": false}]'
 done
 
 
