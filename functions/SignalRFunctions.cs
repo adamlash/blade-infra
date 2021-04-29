@@ -62,11 +62,16 @@ namespace SignalRFunctions
                 try
                 {
                     turbineId = eventGridEvent.Subject;
-                    log.LogInformation($"updating {turbineId}'s alert property");
+                    
                     var data = eventGridData.SelectToken("data");
                     var patch = data.SelectToken("patch");
-
-                    alert = patch.First["value"].ToObject<bool>();
+                    foreach(JToken token in patch)
+                    {
+                        if(token["path"].ToString() == "/Alert")
+                        {
+                            alert = token["value"].ToObject<bool>();
+                        }
+                    }
 
                     log.LogInformation($"setting alert to: {alert}");
                     var property = new Dictionary<object, object>
