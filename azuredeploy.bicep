@@ -354,5 +354,5 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   ]
 }
 
-// output result object = reference('PostDeploymentscript').outputs
-// output result string = reference(funcApp.id, '2019-08-01', 'Full').identity.principalId
+output adtUrl string = adt.properties.hostName
+output functionApp string = concat('https://', funcApp.properties.hostNames[0], '/api/negotiate')

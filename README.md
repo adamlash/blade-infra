@@ -34,6 +34,11 @@ you can echo this `echo $objectid` and `echo $userid` to check it has a value
 `az group create --name ${projectname}-rg --location eastus`
 
 ### 6. Deploy ARM template to Resource Group
-`az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${userid} appRegObjectId=${objectid}`
+`az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${userid} appRegObjectId=${objectid} --query "properties.outputs"`
+- Denote the output values here for the Azure Digital Twins URL and FunctionApp SignalR URL. These will be used later
+
+### 7. Get IotHub Connection String
+`az iot hub connection-string show --resource-group ${projectname}-rg`
+- Save this for later use
 
 ### 7. Add values to the Device Sim and Test
