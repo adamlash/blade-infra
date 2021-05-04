@@ -37,6 +37,14 @@ you can echo this `echo $objectid` and `echo $userid` to check it has a value
 `az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${userid} appRegObjectId=${objectid} --query "properties.outputs"`
 - Denote the output values here for the Azure Digital Twins URL and FunctionApp SignalR URL. These will be used later
 
+*There's also an optional two-step approach here*
+
+##### Create Deployment:
+`az deployment group create -f azuredeploy.bicep -g ${projectname}-rg --parameters projectName=${projectname} userId=${userid} appRegObjectId=${objectid} `
+
+##### Query Outputs:
+`az deployment group show -n azuredeploy -g ${projectname}-rg --query properties.outputs.importantInfo.value`
+
 ### 7. Get IotHub Connection String
 `az iot hub connection-string show --resource-group ${projectname}-rg`
 - Save this for later use

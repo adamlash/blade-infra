@@ -354,5 +354,8 @@ resource PostDeploymentscript 'Microsoft.Resources/deploymentScripts@2020-10-01'
   ]
 }
 
-output adtUrl string = adt.properties.hostName
-output functionApp string = concat('https://', funcApp.properties.hostNames[0], '/api/negotiate')
+output importantInfo object = {
+  iotHubName: iotHubName
+  signalRNegotiatePath: 'https://${funcApp.name}.azurewebsites.net/api/negotiate'
+  adtHostName: 'https://${adt.properties.hostName}'
+}
